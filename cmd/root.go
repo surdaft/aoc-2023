@@ -6,11 +6,13 @@ package cmd
 import (
 	"log/slog"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 var debug bool = false
+var inputFile string = ""
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -45,4 +47,16 @@ func init() {
 		slog.Info("logger initialised", slog.String("level", level.String()))
 	})
 	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "extra verbose output")
+
+	rootCmd.PersistentFlags().StringVar(&inputFile, "input", inputFile, "file for input")
+}
+
+func getInputData() ([]string, error) {
+	inputData, err := os.ReadFile(inputFile)
+	if err != nil {
+		return []string{}, err
+	}
+
+	lines := strings.Split(string(inputData), "\n")
+	return lines, nil
 }
